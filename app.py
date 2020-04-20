@@ -59,10 +59,15 @@ def add_product():
   return product_schema.jsonify(new_product)
 
 @app.route('/products', methods=['GET'])
-def get_product():
+def get_products():
   all_products = Product.query.all()
   result = products_schema.dump(all_products)
   return jsonify(result)
+
+@app.route('/product/<id>', methods=['GET'])
+def get_product(id):
+  product = Product.query.get(id)
+  return product_schema.jsonify(product)
 
 ## Run
 if __name__ == "__main__":
