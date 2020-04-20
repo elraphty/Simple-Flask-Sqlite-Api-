@@ -31,19 +31,32 @@ class Product(db.Model):
     self.price = price
     self.qty = qty
  
-
-@app.route('/', methods=['GET'])
-def index():
-  return jsonify({'msg': 'hello'})
-
 # product schema
 class ProductSchema(ma.Schema):
   class Meta:
     fields = ('id', 'name', 'description', 'price', 'qty')
 
 # init schema
-product_schema = ProductSchema(strict=True)
-products_schema = ProductSchema(many=True, strict=True)
+product_schema = ProductSchema()
+products_schema = ProductSchema(many=True)
+
+@app.route('/', methods=['GET'])
+def index():
+  return jsonify({'msg': 'hello'})
+
+@app.route('/product', methods=['POST'])
+def add_product():
+  name = request.json['name']
+  description = request.json['description']
+  price = request.json['price']
+  qty = request.json['qty']
+
+  new_product = Product(name, description, price, qty)
+
+  db.session.add(new_product)
+  db.session.commit()
+
+  return product_schema.jsonify(new_product)
 
 ## Run
 if __name__ == "__main__":
